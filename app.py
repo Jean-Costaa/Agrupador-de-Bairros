@@ -183,10 +183,10 @@ with col2:
 
         #st_folium(fmap, width=1100, height=550)
 
-        fmap.save('mapa_renderizado.html')
+        fmap.save('G:\Meu Drive\Projetos\Poligonos_Shopee\mapa_renderizado.html')
 
         # Carrega e exibe o HTML como iframe
-        with open("mapa_renderizado.html", "r", encoding="utf-8") as f:
+        with open("G:\Meu Drive\Projetos\Poligonos_Shopee\mapa_renderizado.html", "r", encoding="utf-8") as f:
             html_content = f.read()
 
         html(html_content, height=500, scrolling=True)
