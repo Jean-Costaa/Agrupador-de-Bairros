@@ -7,6 +7,10 @@ import folium
 import pandas as pd
 import openpyxl
 import os
+from pathlib import Path
+
+BASE_DIR   = Path(__file__).resolve().parent.parent  # raiz do projeto
+MAPAS_DIR  = BASE_DIR / "data" 
 
 # Mapeamento de nomes de estados → caminho do arquivo GeoJSON
 MAPAS_ESTADOS = {
@@ -41,13 +45,22 @@ MAPAS_ESTADOS = {
 
 
 
-def carregar_mapa(estado_selecionado):
-    caminho = MAPAS_ESTADOS.get(estado_selecionado)
-    if not caminho:
-        raise ValueError(f"Mapa para o estado '{estado_selecionado}' não foi configurado.")
-    
-    return gpd.read_file(caminho, driver='GeoJSON')
-    
+def carregar_mapa(estado):
+    nome_arquivo = MAPAS_ESTADOS.get(estado)
+    if not nome_arquivo:
+        raise ValueError(f"Estado '{estado}' não configurado.")
+
+    caminho = MAPAS_DIR / nome_arquivo
+
+    if not caminho.exists():               # avisa no Streamlit
+        import streamlit as st
+        st.error(f"GeoJSON não encontrado: {caminho}")
+        return gpd.GeoDataFrame()
+
+    # elimina limite de tamanho do driver, caso o ficheiro seja grande
+    os.environ.setdefault("OGR_GEOJSON_MAX_OBJ_SIZE", "0")
+
+    return gpd.read_file(caminho)          
 
 
 
