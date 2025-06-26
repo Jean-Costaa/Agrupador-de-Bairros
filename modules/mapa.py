@@ -1,0 +1,53 @@
+import geopandas as gpd
+import matplotlib.pyplot as plt
+from shapely.geometry import Point, LinearRing, Polygon
+from folium.plugins import FastMarkerCluster
+import folium.features
+import folium
+import pandas as pd
+import openpyxl
+import os
+
+# Mapeamento de nomes de estados → caminho do arquivo GeoJSON
+MAPAS_ESTADOS = {
+    "Acre": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Acre.geojson",
+    "Alagoas": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Alagoas.geojson",
+    "Amapá": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Amapá.geojson",
+    "Amazonas": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Amazonas.geojson",
+    "Bahia": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Bahia.geojson",
+    "Ceará": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Ceará.geojson",
+    "Distrito Federal": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Distrito Federal.geojson",
+    "Espírito Santo": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Espírito Santo.geojson",
+    "Goiás": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Goiás.geojson",
+    "Maranhão": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Maranhão.geojson",
+    "Mato Grosso": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Mato Grosso.geojson",
+    "Mato Grosso do Sul": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Mato Grosso do Sul.geojson",
+    "Minas Gerais": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Minas Gerais.geojson",
+    "Pará": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Pará.geojson",
+    "Paraíba": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Paraíba.geojson",
+    "Paraná": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Paraná.geojson",
+    "Pernambuco": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Pernambuco.geojson",
+    "Piauí": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Piauí.geojson",
+    "Rio de Janeiro": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Rio de Janeiro.geojson",
+    "Rio Grande do Norte": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Rio Grande do Norte.geojson",
+    "Rio Grande do Sul": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Rio Grande do Sul.geojson",
+    "Rondônia": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Rondônia.geojson",
+    "Roraima": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Roraima.geojson",
+    "Santa Catarina": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Santa Catarina.geojson",
+    "São Paulo": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_São Paulo.geojson",
+    "Sergipe": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Sergipe.geojson",
+    "Tocantins": r"G:\Meu Drive\Projetos\Poligonos_Shopee\data\BR_bairros_municipios_Tocantins.geojson"
+}
+
+
+
+def carregar_mapa(estado_selecionado):
+    caminho = MAPAS_ESTADOS.get(estado_selecionado)
+    if not caminho:
+        raise ValueError(f"Mapa para o estado '{estado_selecionado}' não foi configurado.")
+    
+    return gpd.read_file(caminho, driver='GeoJSON')
+    
+
+
+

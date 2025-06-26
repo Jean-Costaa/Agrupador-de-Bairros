@@ -1,0 +1,6 @@
+.\.venv\Scripts\Activate.ps1   >> ativa ambiente virtual
+
+pip install -r requirements.txt   >> instala bibliotecas do arquivo requirements
+
+streamlit run app.py
+
